@@ -1,5 +1,5 @@
 from unittest import TestCase
-from agm.account import Account, InstanceSet
+from agm.aws import Account, InstanceSet
 
 
 account = None
@@ -67,3 +67,8 @@ class TestInstanceSet(TestCase):
         self.i_set.filter_on_ids(ids[:2], mode='whitelist')
         new_ids = self.i_set.get_ids()
         self.assertEqual(len(new_ids), 2)
+
+    def test_bad_mode_for_filter(self):
+        ids = self.i_set.get_ids()
+        with self.assertRaises(ValueError):
+            self.i_set.filter_on_ids(ids[:2], mode='greenlist')

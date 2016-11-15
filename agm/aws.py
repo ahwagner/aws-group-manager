@@ -1,7 +1,5 @@
 import boto3
-import paramiko
-import time
-import os
+
 
 SESSION_ARGS = ('aws_access_key_id',
                 'aws_secret_access_key',
@@ -76,6 +74,8 @@ class InstanceSet:
 
     def _filter(self, mode, labels, z):
         # Z is a zip object with format zip(label, instance)
+        if mode not in ['whitelist', 'blacklist']:
+            raise ValueError('Expected mode to be "whitelist" or "blacklist".')
         new = list()
         if isinstance(labels, str):
             labels = [labels]
