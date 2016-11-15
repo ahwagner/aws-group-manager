@@ -32,6 +32,11 @@ class TestInstanceSet(TestCase):
         self.assertIsInstance(self.i_set.get_names(), list)
         self.assertIsInstance(self.i_set.get_names()[0], str)
 
+    def test_ids(self):
+        self.assertGreater(len(self.i_set.get_ids()), 0)
+        self.assertIsInstance(self.i_set.get_ids(), list)
+        self.assertIsInstance(self.i_set.get_ids()[0], str)
+
     def test_filter_on_names_blacklist(self):
         names = self.i_set.get_names()
         self.i_set.filter_on_names(names[:2])
@@ -50,3 +55,15 @@ class TestInstanceSet(TestCase):
         self.i_set.filter_on_names(badname)
         new_names = self.i_set.get_names()
         self.assertEqual(len(names), len(new_names))
+
+    def test_filter_on_ids_blacklist(self):
+        ids = self.i_set.get_ids()
+        self.i_set.filter_on_ids(ids[:2])
+        new_ids = self.i_set.get_ids()
+        self.assertEqual(len(ids) - len(new_ids), 2)
+
+    def test_filter_on_ids_whitelist(self):
+        ids = self.i_set.get_ids()
+        self.i_set.filter_on_ids(ids[:2], mode='whitelist')
+        new_ids = self.i_set.get_ids()
+        self.assertEqual(len(new_ids), 2)

@@ -48,7 +48,11 @@ class InstanceSet:
 
     def __init__(self, label, account):
         self.label = label
+        self.account = account
         self.instances = [i for i in account.instances]
+
+    def reset(self):
+        self.instances = [i for i in self.account.instances]
 
     def get_names(self):
         names = list()
@@ -59,16 +63,26 @@ class InstanceSet:
                 names.append(d['Name'])
         return names
 
+    def get_ids(self):
+        return [i.instance_id for i in self.instances]
+
     def filter_on_names(self, names, mode='blacklist'):
-        if mode not in ['blacklist', 'whitelist']:
-            raise ValueError('Expected mode to be "blacklist" or "whitelist"')
+        z = zip(self.get_names(), self.instances)
+        self._filter(mode, names, z)
+
+    def filter_on_ids(self, ids, mode='blacklist'):
+        z = zip(self.get_ids(), self.instances)
+        self._filter(mode, ids, z)
+
+    def _filter(self, mode, labels, z):
+        # Z is a zip object with format zip(label, instance)
         new = list()
-        if isinstance(names, str):
-            names = [names]
-        for name, instance in zip(self.get_names(), self.instances):
-            if name in names and mode == 'blacklist':
+        if isinstance(labels, str):
+            labels = [labels]
+        for label, instance in z:
+            if label in labels and mode == 'blacklist':
                 continue
-            elif name not in names and mode == 'whitelist':
+            elif label not in labels and mode == 'whitelist':
                 continue
             else:
                 new.append(instance)
